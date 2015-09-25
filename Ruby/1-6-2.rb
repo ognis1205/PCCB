@@ -4,7 +4,7 @@
 class Problem
 	def self.solve(length, ants)
 		max = nil
-		min = nil
+    min = nil
 		for ant in ants do
 			candidate = MAX(length - ant, ant)
 			max = max != nil && max > candidate ? max : candidate
