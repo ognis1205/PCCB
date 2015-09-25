@@ -27,9 +27,7 @@ class Problem
   end
 end
 
-
 $a = []
-
 ARGV.each do |arg|
   $a << arg.to_i
 end
