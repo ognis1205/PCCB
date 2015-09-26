@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 # PCCB 2-1-1
 
-class Problem
+class Solver
   def self.solve(sum, array)
     dfs(sum, 0, array)
   end
 
   def self.dfs(residual, index, array, accumulator=[])
     if residual == 0
-      print "found: #{accumulator}\n"
+      puts "found: #{accumulator}"
       return
     elsif index >= array.size
       return
@@ -31,8 +31,8 @@ ARGV.each_with_index do |arg, index|
       $array << Integer(arg)
     end
   rescue Exception => e
-    print e.to_s << '\n'
+    puts e.to_s
   end
 end
 
-Problem.solve($sum, $array)
+Solver.solve($sum, $array)

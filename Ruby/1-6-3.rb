@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # PCCB 1-6-3
 
-class Problem
+class Solver
 	def self.solve(s, a)
     prepare!(a)
     for i in 0...a.size
@@ -9,7 +9,7 @@ class Problem
         for k in (j+1)...a.size
           l = binary_search(a, k, a.size - 1, s - a[i] - a[j] - a[k])
           if l > -1
-            print "answer: #{i} #{j} #{k} #{l}\n"
+            puts "answer: #{i} #{j} #{k} #{l}"
             return
           end
         end
@@ -46,8 +46,8 @@ ARGV.each_with_index do |arg, index|
       $array << Integer(arg)
     end
 	rescue Exception => e
-    print e.to_s << '\n'
+    puts e.to_s
 	end
 end
 
-Problem.solve($sum, $array)
+Solver.solve($sum, $array)

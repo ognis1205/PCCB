@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # PCCB 1-6-2
 
-class Problem
+class Solver
 	def self.solve(length, ants)
 		max = nil
     min = nil
@@ -10,8 +10,8 @@ class Problem
 			max = max != nil && max > candidate ? max : candidate
 			min = min != nil && min < candidate ? min : candidate
 		end
-		print "max: #{max}\n"
-		print "min: #{min}\n"
+		puts "max: #{max}"
+		puts "min: #{min}"
 	end
 
 	def self.MAX(l, r)
@@ -31,8 +31,8 @@ ARGV.each_with_index do |arg, index|
 			$ants  << Integer(arg)
 		end
 	rescue Exception => e
-		print e.to_s
+		puts e.to_s
 	end
 end
 
-Problem.solve($length, $ants)
+Solver.solve($length, $ants)
