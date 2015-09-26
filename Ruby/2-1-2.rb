@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# PCCB 2-1-1
+# PCCB 2-1-2
 
 module Solver
   DX = [1,  1,  1,  0,  0, -1, -1, -1]
@@ -92,22 +92,22 @@ module Solver
   end
 end
 
-$/     = "END"
-$map    = [[]]
-$row    = 0
-$column = 0
+$/      = "END"
+map     = [[]]
+rows    = 0
+columns = 0
 
 lines = STDIN.gets.rstrip.split(/\r?\n/)
 lines.each_with_index do |line, row|
   if row != lines.size - 1
-    $row = $row.succ
-    $column = $column > line.size ? $column : line.size
-    $map[row] = Array.new if $map[row] == nil
+    rows = rows.succ
+    columns = columns > line.size ? columns : line.size
+    map[row] = Array.new if map[row] == nil
     line.each_char.with_index do |c, column|
       if c == Solver::Map::LAKE.upcase || c == Solver::Map::LAKE
-        $map[row][column] = Solver::Map::LAKE
+        map[row][column] = Solver::Map::LAKE
       else
-        $map[row][column] = Solver::Map::LAND
+        map[row][column] = Solver::Map::LAND
       end
     end
   end
@@ -116,7 +116,6 @@ end
 begin
   problem = Solver::Map.new($map, $row, $column)
   result  = Solver::solve(problem)
-  problem.debug
   puts "result: #{result}"
 rescue TypeError, RangeError => e
   puts e.to_s
