@@ -2,6 +2,19 @@
 # PCCB 2-2-1
 
 module Solver
+  module Wallet
+    def contain?(coin)
+      return self.has_key?(coin)
+    end
+
+    def show
+      cache = self.sort {|(k1, v1), (k2, v2)| k1.to_i <=> k2.to_i}
+      cache.each do |coin, count|
+        puts "coin: %3s => %3d" % [coin, count]
+      end
+    end
+  end
+
   @context = {
     '1'   => 0,
     '5'   => 0,
@@ -10,17 +23,7 @@ module Solver
     '100' => 0,
     '500' => 0
   }
-
-  def @context.contain?(coin)
-    return self.has_key?(coin)
-  end
-
-  def @context.show
-    cache = self.sort {|(k1, v1), (k2, v2)| k1.to_i <=> k2.to_i}
-    cache.each do |coin, count|
-      puts "coin: %3s => %3d" % [coin, count]
-    end
-  end
+  class << @context; include Wallet; end;
 
   def self.solve(residual, wallet)
     cache = wallet.sort {|(k1, v1), (k2, v2)| k2.to_i <=> k1.to_i}
@@ -51,17 +54,7 @@ wallet = {
   '100' => 0,
   '500' => 0
 }
-
-def wallet.contain?(coin)
-  return self.has_key?(coin)
-end
-
-def wallet.show
-  cache = self.sort {|(k1, v1), (k2, v2)| k1.to_i <=> k2.to_i}
-  cache.each do |coin, count|
-    puts "coin: %3s => %3d" % [coin, count]
-  end
-end
+class << wallet; include Solver::Wallet; end;
 
 ARGV.each_with_index do |arg, index|
   begin
