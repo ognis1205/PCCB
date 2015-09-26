@@ -13,7 +13,7 @@ module Solver
     bfs(map)
     current = map.goal.link
     while current != nil
-      current.type = Trait::Type::SELECTED if current.type != Trait::Type::START
+      current.type = Trail::Type::SELECTED if current.type != Trail::Type::START
       current = current.link
     end
   end
@@ -28,12 +28,11 @@ module Solver
         next_column = current.column + direction[:dy]
         if map.valid_index?(next_row, next_column)
           neighbor = map[next_row, next_column]
-          if (neighbor.type == Trait::Type::PATH || neighbor.type == Trait::Type::GOAL) && neighbor.cost >= current.cost + 1
-            puts "debug"
+          if (neighbor.type == Trail::Type::PATH || neighbor.type == Trail::Type::GOAL) && neighbor.cost >= current.cost + 1
             neighbor.cost = current.cost + 1
             neighbor.link = current
           end
-          if not neighbor.visited? && neighbor.type != Trait::Type::GOAL
+          if not neighbor.visited? && neighbor.type != Trail::Type::GOAL
             neighbor.visited
             queue.push(neighbor)
           end
@@ -42,7 +41,7 @@ module Solver
     end
   end
 
-  class Trait
+  class Trail
     module Type
       START    = 's'
       GOAL     = 'g'
@@ -72,7 +71,7 @@ module Solver
     end
 
     def type=(type)
-      raise TypeError, "invalid type for Trait type" if not Type::include?(type)
+      raise TypeError, "invalid type for Trail type" if not Type::include?(type)
       @type = type
     end
 
@@ -93,8 +92,8 @@ module Solver
     def validate(type, cost, link)
       validated   = Type::include?(type)
       validated &&= cost == Float::INFINITY || cost.is_a?(Integer)
-      validated &&= link == nil || link.kind_of?(Trait)
-      raise TypeError, "invalid type for Trait class" if not validated
+      validated &&= link == nil || link.kind_of?(Trail)
+      raise TypeError, "invalid type for Trail class" if not validated
     end
   end
 
@@ -118,7 +117,7 @@ module Solver
 
     def []=(row, column, data)
       raise RangeError, "invalid access to maze" if not valid_index?(row, column)
-      raise TypeError,  "invalid access to maze" if not valid_trait?(data)
+      raise TypeError,  "invalid access to maze" if not valid_trail?(data)
       @data[row][column] = data
     end
 
@@ -148,25 +147,25 @@ module Solver
         @data[row] = Array.new if @data[row] == nil
         for column in 0...@columns
           case @data[row][column]
-          when Trait::Type::START then
+          when Trail::Type::START then
             raise RangeError, "multiple start specified" if not @start == nil
-            @start = Trait.new(row, column, Trait::Type::START)
+            @start = Trail.new(row, column, Trail::Type::START)
             @data[row][column] = @start
-          when Trait::Type::GOAL then
+          when Trail::Type::GOAL then
             raise RangeError, "multiple start specified" if not @goal == nil
-            @goal = Trait.new(row, column, Trait::Type::GOAL)
+            @goal = Trail.new(row, column, Trail::Type::GOAL)
             @data[row][column] = @goal
-          when Trait::Type::PATH
-            @data[row][column] = Trait.new(row, column, Trait::Type::PATH)
+          when Trail::Type::PATH
+            @data[row][column] = Trail.new(row, column, Trail::Type::PATH)
           else
-            @data[row][column] = Trait.new(row, column, Trait::Type::WALL)
+            @data[row][column] = Trail.new(row, column, Trail::Type::WALL)
           end
         end
       end
     end
 
-    def valid_trait?(data)
-      return data.kind_of?(Trait)
+    def valid_trail?(data)
+      return data.kind_of?(Trail)
     end
   end
 end
