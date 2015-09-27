@@ -119,4 +119,5 @@ begin
   puts "result: #{result}"
 rescue TypeError, RangeError => e
   puts e.to_s
+  exit
 end

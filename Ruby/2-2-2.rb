@@ -5,12 +5,13 @@ module Solver
   def self.solve(tasks)
     result   = 0
     end_time = 0
-    tasks = tasks.sort {|l, r| l[:end_time] <=> r[:end_time]}
+    tasks    = tasks.sort {|l, r| l[:end_time] <=> r[:end_time]}
+    tasks    = tasks.find_all {|task| task[:start_time] > end_time}
 
     while tasks.size > 0
-      tasks    = tasks.find_all {|task| task[:start_time] > end_time}
-      end_time = tasks.shift[:end_time]
-      result  += 1
+      result   += 1
+      end_time  = tasks.shift[:end_time]
+      tasks     = tasks.find_all {|task| task[:start_time] > end_time}
     end
 
     return result
@@ -33,10 +34,11 @@ ARGV.each_with_index do |arg, index|
     s, e = arg.split(/,/)
     s = Integer(s); e = Integer(e);
     if s != nil && s >= 0 && e != nil && e >= s
-      tasks << {start_time: Integer(s), end_time: Integer(e)}
+      tasks << {start_time: s, end_time: e}
     end
   rescue Exception => e
     puts e.to_s
+    exit
   end
 end
 

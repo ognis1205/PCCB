@@ -33,6 +33,7 @@ ARGV.each_with_index do |arg, index|
     array << Integer(arg)
   rescue Exception => e
     puts e.to_s
+    exit
   end
 end
 

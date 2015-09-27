@@ -193,4 +193,5 @@ begin
   maze.show
 rescue TypeError, RangeError => e
   puts e.to_s
+  exit
 end

@@ -69,6 +69,7 @@ ARGV.each_with_index do |arg, index|
     end
   rescue Exception => e
     puts e.to_s
+    exit
   end
 end
 
