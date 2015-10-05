@@ -6,7 +6,6 @@ module Solver
     result   = 0
     end_time = 0
     tasks    = tasks.sort {|l, r| l[:end_time] <=> r[:end_time]}
-    tasks    = tasks.find_all {|task| task[:start_time] > end_time}
 
     while tasks.size > 0
       result   += 1
