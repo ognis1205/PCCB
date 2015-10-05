@@ -16,7 +16,7 @@ class Solver
     accumulator.push(index)
     dfs(residual - array[index], index + 1, array, accumulator) if residual >= array[index]
     accumulator.pop
-    dfs(residual,                index + 1, array, accumulator)
+    dfs(residual, index + 1, array, accumulator)
   end
 end
 
@@ -26,7 +26,7 @@ $array = []
 ARGV.each_with_index do |arg, index|
   begin
     if index == 0
-      $sum    = Integer(arg)
+      $sum = Integer(arg)
     else
       $array << Integer(arg)
     end

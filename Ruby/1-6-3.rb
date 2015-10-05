@@ -2,7 +2,7 @@
 # PCCB 1-6-3
 
 class Solver
-	def self.solve(s, a)
+  def self.solve(s, a)
     prepare!(a)
     for i in 0...a.size
       for j in (i+1)...a.size
@@ -15,7 +15,7 @@ class Solver
         end
       end
     end
-	end
+  end
 
   def self.prepare!(a)
     a = a.kind_of?(Array) && a.all? {|x| x.is_a?(Integer)} ? a : []
@@ -39,16 +39,16 @@ $sum   = 0
 $array = []
 
 ARGV.each_with_index do |arg, index|
-	begin
+  begin
     if index == 0
       $sum    = Integer(arg)
     else
       $array << Integer(arg)
     end
-	rescue Exception => e
+  rescue Exception => e
     puts e.to_s
     exit
-	end
+  end
 end
 
 Solver.solve($sum, $array)

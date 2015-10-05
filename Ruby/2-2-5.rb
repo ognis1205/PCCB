@@ -12,8 +12,6 @@ module Solver
   end
 
   class Heap
-    attr_reader :elements
-
     def initialize
       @elements = [nil]
     end

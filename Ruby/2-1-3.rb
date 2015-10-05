@@ -50,7 +50,7 @@ module Solver
       SELECTED = '@'
 
       def self.include?(type)
-        return type == Type::START || type == Type::GOAL || type == Type::WALL || Type::PATH || Type::SELECTED
+        return type == Type::START || type == Type::GOAL || type == Type::WALL || type == Type::PATH || type == Type::SELECTED
       end
     end
 
