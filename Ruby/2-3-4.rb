@@ -3,45 +3,48 @@
 
 module Solver
   class Memo
-    attr_reader :data
-
-    def initialize
+    def initialize(items=[], constraint=0)
       @data = [[]]
+      @items = items
+      @constraint = constraint
+    end
+
+    class << Array
+      def inject(acc, &b)
+        return acc if empty?
+        (drop 1).inject(yield(acc, first), &b)
+      end
     end
 
     def [](i, j)
       @data[i] = Array::new if not @data[i]
-      @data[i][j]
+      @data[i][j] if @data[i][j] != nil
+      if i == 0 and j == 0
+        @data[i][j] = 0
+      elsif i == 0 and j != 0
+        @data[i][j] = Float::INFINITY
+      elsif @items[i - 1][:value] <= j
+        @data[i][j] = Memo::min(self[i - 1, j], self[i - 1, j - @items[i - 1][:value]] + @items[i - 1][:weight])
+      else
+        @data[i][j] = self[i - 1, j]
+      end
     end
 
-    def []=(i, j, data)
-      @data[i] = Array::new if not @data[i]
-      @data[i][j] = data
+    private
+
+    def Memo::min(left, right)
+      left < right ? left : right
     end
   end
 
   def Solver::solve(items, constraint)
-    @memo = Memo::new
-    @items = items
-    @constraint = constraint
-    memoize(items.size, constraint)
-  end
-
-  def Solver::memoize(i, j)
-    @memo[i, j] if @memo[i, j] != nil
-    if i == 0 and j == 0
-      @memo[i, j] = 0
-    elsif i == 0 and j != 0
-      @memo[i, j] = Float::INFINITY
-    elsif @items[i - 1][:value] <= j
-      @memo[i, j] = min(memoize(i - 1, j), memoize(i - 1, j - @items[i - 1][:value]) + @items[i - 1][:weight])
-    else
-      @memo[i, j] = memoize(i - 1, j)
+    memo = Memo::new(items, constraint)
+    sup = items.inject(0) { |acc, item| acc += item[:value]}
+    answer = 0
+    (0..sup).each do |candidate|
+      answer = memo[items.size, candidate] > constraint ? answer : candidate
     end
-  end
-
-  def Solver::min(left, right)
-    left < right ? left : right
+    answer
   end
 end
 
