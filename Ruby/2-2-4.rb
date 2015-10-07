@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 # PCCB 2-2-4
+# -*- coding: utf-8 -*-
 
 module Solver
   def Solver.solve(points, radius)

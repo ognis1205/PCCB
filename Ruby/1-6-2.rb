@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 # PCCB 1-6-2
+# -*- coding: utf-8 -*-
 
 class Solver
   def self.solve(length, ants)

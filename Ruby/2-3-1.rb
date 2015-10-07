@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 # PCCB 2-3-1
+# -*- coding: utf-8 -*-
 
 module Solver
   @dp = [[]]

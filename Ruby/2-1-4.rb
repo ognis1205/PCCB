@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 # PCCB 2-1-4
+# -*- coding: utf-8 -*-
 
 module Solver
   def perm

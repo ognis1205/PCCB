@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 # PCCB 2-2-2
+# -*- coding: utf-8 -*-
 
 module Solver
   def self.solve(tasks)

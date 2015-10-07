@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 # PCCB 2-1-1
+# -*- coding: utf-8 -*-
 
 class Solver
   def self.solve(sum, array)

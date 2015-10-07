@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 # PCCB 2-2-3
+# -*- coding: utf-8 -*-
 
 module Solver
   def Solver.solve(input)
