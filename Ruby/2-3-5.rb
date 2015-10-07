@@ -10,8 +10,8 @@ module Solver
       end
     end
 
-    def find_last_index(&b)
-      @data.reverse.find_index &b
+    def longest_subsequence
+      @data.size - @data.reverse.find_index { |element| element != Float::INFINITY }
     end
 
     def position(value)
@@ -32,9 +32,7 @@ module Solver
   end
 
   def Solver::solve(sequence)
-    memo = Memo::new(sequence)
-    index = memo.find_last_index { |element| element != Float::INFINITY }
-    index + 1
+    Memo::new(sequence).longest_subsequence
   end
 end
 
