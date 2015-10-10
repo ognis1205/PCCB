@@ -15,10 +15,6 @@ class Solver(object):
                         return
         print "not found"
 
-    @staticmethod
-    def max(left, right):
-        return left if left > right else right
-
 
 def main(argv=None):
     if not argv:
