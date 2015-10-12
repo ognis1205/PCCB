@@ -19,12 +19,24 @@ class EnumType(type):
         super(EnumType, clazz).__init__(name, bases, attributes)
         clazz._values = []
         for key, value in attributes.iteritems():
-            item = clazz(key, value)
-            setattr(clazz, key, item)
-            clazz._values.append(item)
+            if not key.startswith('_'):
+                item = clazz(key, value)
+                setattr(clazz, key, item)
+                clazz._values.append(item)
 
     def __iter__(clazz):
         return iter(clazz._values)
+
+
+class AbstractEnum(object):
+    __metaclass__ = EnumType
+
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
+    def __repr__(self):
+        return repr(self.value)
 
 
 class Solver(object):
@@ -33,9 +45,22 @@ class Solver(object):
         pass
 
     @innerclass
+    class CellType(AbstractEnum):
+        LAND = '*'
+        LAKE = 'w'
+        WALKED = '-'
+
+    @innerclass
     class Cell(object):
         def __init__(self, char):
-            self.data = char
+            for cell_type in Solver.CellType:
+                if char == cell_type.value:
+                    self.data = cell_type
+                    return
+            self.data = Solver.CellType.LAND
+
+        def __repr__(self):
+            return repr(self.data)
 
     @innerclass
     class Map(object):
