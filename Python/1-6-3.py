@@ -7,9 +7,9 @@ class Solver(object):
     @staticmethod
     def solve(target, items):
         Solver.prepare(items)
-        for i in range(0, len(items) - 1):
-            for j in range(i + 1, len(items) - 1):
-                for k in range(j + 1, len(items) - 1):
+        for i in range(0, len(items)):
+            for j in range(i + 1, len(items)):
+                for k in range(j + 1, len(items)):
                     l = Solver.binary_search(target - items[i] - items[j] - items[k], items[k + 1:])
                     if l >= 0:
                         return items[i], items[j], items[k], items[l + k + 1]

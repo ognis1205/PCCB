@@ -7,9 +7,9 @@ class Solver(object):
     @staticmethod
     def solve(edges):
         edges = sorted(edges, reverse=True)
-        for i in range(0, len(edges) - 1):
-            for j in range(i + 1, len(edges) - 1):
-                for k in range(j + 1, len(edges) - 1):
+        for i in range(0, len(edges)):
+            for j in range(i + 1, len(edges)):
+                for k in range(j + 1, len(edges)):
                     if edges[i] < edges[j] + edges[k]:
                         print "found: %d %d %d" % (edges[i], edges[j] ,edges[k])
                         return
