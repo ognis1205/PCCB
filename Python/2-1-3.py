@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+from functools import wraps
 
 class EnumType(type):
     def __init__(clazz, name, bases, attributes):
@@ -35,21 +36,44 @@ class Enum(object):
         return self.key == other.key and self.value == other.value if isinstance(other, self.__class__) else False
 
 
-class placeholder(object):
-    def __init__(self, clazz):
-        self.clazz = clazz
-
-    def __get__(self, instance, clazz):
-        class Wrapper(self.clazz):
-            outer = instance
-        Wrapper.__name__ = self.clazz.__name__
-        return Wrapper
+class Generative(object):
+    @staticmethod
+    def chain(func):
+        @wraps(func)
+        def decorator(self, *args, **kargs):
+            func(self, *args, **kargs)
+            return self
+        return decorator
 
 
 class Solver(object):
     @staticmethod
     def solve(maze):
-        queue = Queue(maze.start.cost)
+        Solver.first_walk(maze)
+        Solver.second_walk(maze)
+
+    @staticmethod
+    def first_walk(maze):
+        queue = Solver.Queue(maze.start.set_cost(0).set_previous(None))
+        while not queue.is_empty():
+            current = queue.dequeue()
+            for variation in Solver.Variations:
+                next_row = current.row + variation['dx']
+                next_column = current.column + variation['dy']
+                if maze.has_index(next_row, next_column):
+                    neighbor = maze[next_row][next_column]
+                    cost = current.cost + 1
+                    if neighbor.cell != Solver.Cells.WALL and cost < neighbor.cost:
+                        neighbor.set_cost(cost).set_previous(current)
+                        queue.enqueue(neighbor)
+
+    @staticmethod
+    def second_walk(maze):
+        trail = maze.goal
+        while trail:
+            if trail.cell == Solver.Cells.PATH:
+                trail.set_cell(Solver.Cells.WALKED)
+            trail = trail.previous
 
     class Variations(Enum):
         UP    = {'dx' :  0, 'dy' :  1}
@@ -75,8 +99,14 @@ class Solver(object):
             return Solver.Cells.WALL
 
     class Queue(object):
-        def __init__(self):
-            self.data = []
+        def __init__(self, data=None):
+            if not data:
+                self.data = []
+            else:
+                if isinstance(data, list):
+                    self.data = data
+                else:
+                    self.data = [data]
 
         def enqueue(self, item):
             self.data.append(item)
@@ -85,10 +115,12 @@ class Solver(object):
             return self.data.pop(len(self.data) - 1)
 
         def is_empty(self):
-            return len(self.data) > 0
+            return not len(self.data) > 0
 
-    class Trail(object):
-        def __init__(self, cell, cost=float('inf'), previous=None):
+    class Trail(Generative):
+        def __init__(self, row, column, cell, cost=float('inf'), previous=None):
+            self.row = row
+            self.column = column
             self.cell = cell
             self.cost = cost
             self.previous = previous
@@ -99,6 +131,26 @@ class Solver(object):
 
         def __repr__(self):
             return repr(self.cell)
+
+        @Generative.chain
+        def set_row(self, row):
+            self.row = row
+
+        @Generative.chain
+        def set_column(self, column):
+            self.column = column
+
+        @Generative.chain
+        def set_cell(self, cell):
+            self.cell = cell
+
+        @Generative.chain
+        def set_cost(self, cost):
+            self.cost = cost
+
+        @Generative.chain
+        def set_previous(self, previous):
+            self.previous = previous
 
     class Maze(object):
         def __init__(self, data, rows, columns):
@@ -112,21 +164,25 @@ class Solver(object):
                 for column in range(0, self.columns):
                     try:
                         cell = Solver.Cells.parse(data[row][column])
+                        trail = Solver.Trail(row, column, cell)
                         if cell == Solver.Cells.START:
                             if self.start:
                                 raise ValueError('start must be unique')
                             else:
-                                self.start = cell
+                                self.start = trail
                         if cell == Solver.Cells.GOAL:
                             if self.goal:
                                 raise ValueError('goal must be unique')
                             else:
-                                self.goal = cell
-                        self.trails[row].append(Solver.Trail(cell))
+                                self.goal = trail
+                        self.trails[row].append(trail)
                     except IndexError:
-                        self.trails[row].append(Solver.Trail(Solver.Cells.WALL))
+                        self.trails[row].append(Solver.Trail(row, column, Solver.Cells.WALL))
             if not self.start or not self.goal:
                 raise ValueError('exactly one start and goal must exist')
+
+        def __getitem__(self, index):
+            return self.trails[index]
 
         def __repr__(self):
             result = ""
@@ -136,6 +192,9 @@ class Solver(object):
                 result += "\n"
             return result
 
+        def has_index(self, row, column):
+            return 0 <= row and row < self.rows and 0 <= column and column < self.columns
+
 
 def main(argv=None):
     try:
@@ -143,6 +202,7 @@ def main(argv=None):
             argv = map(lambda line: line.rstrip('\n'), sys.stdin.readlines())
             problem = Solver.Maze(argv, len(argv), len(max(argv, key=len)))
         if argv:
+            Solver.solve(problem)
             print problem
         else:
             print >> sys.stderr, "usage: python 2-1-3.py <map>"
