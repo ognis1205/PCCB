@@ -21,7 +21,7 @@ instance Ord a => Ord (ExtensionOf a) where
 solve :: Int -> [Int] -> (Int, Int)
 solve l as = solve' (NegativeInfinity::ExtensionOf Int, NegativeInfinity::ExtensionOf Int) l as
     where solve' acc@(Finite mx, Finite mn) l []      = (mx, mn)
-          solve' acc@(mx, mn)               l (a:as') = let mx' = max mx (Finite (max a (l - a)))
+          solve' acc@(       mx,        mn) l (a:as') = let mx' = max mx (Finite (max a (l - a)))
                                                             mn' = max mn (Finite (min a (l - a)))
                                                         in  solve' (mx', mn') l as'
 
@@ -54,10 +54,6 @@ getAnts = do arg <- getLine
 putAnsLn :: (Show a) => a -> IO ()
 putAnsLn ans = putStrLn (show ans)
 
-main = let five = Finite 5
-           pinf = PositiveInfinity::ExtensionOf Integer
-           ninf = NegativeInfinity::ExtensionOf Integer
-           results = [(pinf > five), (ninf < pinf), (five > ninf)]
-       in  do l  <- getLength
-              as <- getAnts
-              putAnsLn (solve l as)
+main = do l  <- getLength
+          as <- getAnts
+          putAnsLn (solve l as)
